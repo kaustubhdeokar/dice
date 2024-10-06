@@ -24,9 +24,9 @@ import (
 	"github.com/dicedb/dice/internal/eval/geo"
 	"github.com/dicedb/dice/internal/eval/sortedset"
 	"github.com/dicedb/dice/internal/object"
-	"github.com/rs/xid"
-
 	"github.com/dicedb/dice/internal/sql"
+	st "github.com/dicedb/dice/internal/store"
+	"github.com/rs/xid"
 
 	"github.com/axiomhq/hyperloglog"
 	"github.com/bytedance/sonic"
@@ -3376,6 +3376,14 @@ func evalTOUCH(args []string, store *dstore.Store) []byte {
 }
 
 func evalLPUSH(args []string, store *dstore.Store) []byte {
+
+	fmt.Print("HERERERERERERE")
+	// for i := 0; i < len(args); i++ {
+	// 	fmt.Print(args[i])
+	// }
+
+	fmt.Println(st.GetNumKeys(*store))
+
 	if len(args) < 2 {
 		return diceerrors.NewErrArity("LPUSH")
 	}
@@ -3401,7 +3409,11 @@ func evalLPUSH(args []string, store *dstore.Store) []byte {
 	store.Put(args[0], obj)
 	for i := 1; i < len(args); i++ {
 		obj.Value.(*Deque).LPush(args[i])
+		fmt.Println("arg", i, args[i])
+		store.IncrementKeyCount()
 	}
+
+	fmt.Println(store.GetKeyCount())
 
 	return clientio.RespOK
 }

@@ -49,6 +49,8 @@ type Store struct {
 	watchChan chan QueryWatchEvent
 }
 
+func GetNumKeys(store Store) int { return store.numKeys }
+
 func NewStore(watchChan chan QueryWatchEvent) *Store {
 	return &Store{
 		store:     NewStoreRegMap(),
